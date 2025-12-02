@@ -8,39 +8,78 @@ import repository.IProfileRepository;
 import utils.MongoDBConnection;
 
 public class ProfileRepositoryMongo implements IProfileRepository {
+
     private final MongoCollection<Document> collection;
 
     public ProfileRepositoryMongo() {
-        collection = MongoDBConnection.getDatabase().getCollection("profile");
+        this.collection = MongoDBConnection.getDatabase().getCollection("profile");
     }
 
     @Override
     public Profile getProfile() {
         Document doc = collection.find().first();
         if (doc == null) {
-            Profile p = new Profile("Nombre", "Bio...", "Experiencia...", "email@ejemplo.com", "default.jpg", "banner.jpg");
-            saveProfile(p);
-            return p;
+            // Crear perfil por defecto si no existe
+            Profile defaultProfile = new Profile(
+                "Programador Web",
+                "Biografía por defecto",
+                "Experiencia por defecto",
+                "contacto@ejemplo.com",
+                "default.jpg",
+                "banner.jpg"
+            );
+            saveProfile(defaultProfile);
+            return defaultProfile;
         }
-        Profile p = new Profile();
-        p.setName(doc.getString("name"));
-        p.setBio(doc.getString("bio"));
-        p.setExperience(doc.getString("experience"));
-        p.setContact(doc.getString("contact"));
-        p.setProfilePicture(doc.getString("profilePicture", "default.jpg"));
-        p.setBanner(doc.getString("banner", "banner.jpg"));
-        return p;
+        return documentToProfile(doc);
     }
 
     @Override
     public void saveProfile(Profile profile) {
-        Document doc = new Document()
-            .append("name", profile.getName())
-            .append("bio", profile.getBio())
-            .append("experience", profile.getExperience())
-            .append("contact", profile.getContact())
-            .append("profilePicture", profile.getProfilePicture())
-            .append("banner", profile.getBanner());
+        Document doc = profileToDocument(profile);
+        // Usa upsert para reemplazar el único documento (siempre hay uno solo)
         collection.replaceOne(new Document(), doc, new ReplaceOptions().upsert(true));
+    }
+
+    // --- Métodos auxiliares ---
+
+    private Profile documentToProfile(Document doc) {
+        Profile p = new Profile();
+
+        // Nombre
+        p.setName(doc.getString("name"));
+        if (p.getName() == null) p.setName("Programador Web");
+
+        // Bio
+        p.setBio(doc.getString("bio"));
+        if (p.getBio() == null) p.setBio("Biografía por defecto");
+
+        // Experiencia
+        p.setExperience(doc.getString("experience"));
+        if (p.getExperience() == null) p.setExperience("Experiencia por defecto");
+
+        // Contacto
+        p.setContact(doc.getString("contact"));
+        if (p.getContact() == null) p.setContact("contacto@ejemplo.com");
+
+        // Foto de perfil
+        Object picObj = doc.get("profilePicture");
+        p.setProfilePicture(picObj != null ? picObj.toString() : "default.jpg");
+
+        // Banner
+        Object bannerObj = doc.get("banner");
+        p.setBanner(bannerObj != null ? bannerObj.toString() : "banner.jpg");
+
+        return p;
+    }
+
+    private Document profileToDocument(Profile p) {
+        return new Document()
+            .append("name", p.getName())
+            .append("bio", p.getBio())
+            .append("experience", p.getExperience())
+            .append("contact", p.getContact())
+            .append("profilePicture", p.getProfilePicture())
+            .append("banner", p.getBanner());
     }
 }
