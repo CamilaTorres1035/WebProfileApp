@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import org.bson.Document;
-import repository.ISkillRepository;
 import utils.MongoDBConnection;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/", "/profile"})
