@@ -5,4 +5,5 @@ import model.Profile;
 public interface IProfileRepository {
     Profile getProfile();
     void saveProfile(Profile profile);
+    void deleteProfile();
 }

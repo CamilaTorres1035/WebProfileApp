@@ -64,11 +64,11 @@ public class ProfileRepositoryMongo implements IProfileRepository {
 
         // Foto de perfil
         Object picObj = doc.get("profilePicture");
-        p.setProfilePicture(picObj != null ? picObj.toString() : "default.jpg");
+        p.setProfilePicture(picObj != null ? picObj.toString() : "default.png");
 
         // Banner
         Object bannerObj = doc.get("banner");
-        p.setBanner(bannerObj != null ? bannerObj.toString() : "banner.jpg");
+        p.setBanner(bannerObj != null ? bannerObj.toString() : "banner.jpeg");
 
         return p;
     }
@@ -81,5 +81,10 @@ public class ProfileRepositoryMongo implements IProfileRepository {
             .append("contact", p.getContact())
             .append("profilePicture", p.getProfilePicture())
             .append("banner", p.getBanner());
+    }
+
+    @Override
+    public void deleteProfile() {
+        collection.deleteMany(new Document()); // Borra todos los documentos (solo hay uno)
     }
 }

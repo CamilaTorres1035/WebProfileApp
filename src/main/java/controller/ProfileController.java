@@ -5,6 +5,11 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.Profile;
+import java.util.List;
+
+
+import model.Skill;
+import repository.mongo.SkillRepositoryMongo;
 import repository.IProfileRepository;
 import repository.mongo.ProfileRepositoryMongo;
 
@@ -13,19 +18,23 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/", "/profile"})
-@MultipartConfig(
-    fileSizeThreshold = 1024 * 1024,
-    maxFileSize = 1024 * 1024 * 5,
-    maxRequestSize = 1024 * 1024 * 10
-)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
 public class ProfileController extends HttpServlet {
+
     private IProfileRepository profileRepo = new ProfileRepositoryMongo();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // !Solo para pruebas: si ?reset=true, borra el perfil
+        if ("true".equals(request.getParameter("reset"))) {
+            profileRepo.deleteProfile(); // Usa tu repositorio
+        }
         Profile profile = profileRepo.getProfile();
+        List<Skill> skills = new SkillRepositoryMongo().getAllSkills();
+
         request.setAttribute("profile", profile);
+        request.setAttribute("skills", skills);
         request.getRequestDispatcher("/profile.jsp").forward(request, response);
     }
 
@@ -38,19 +47,27 @@ public class ProfileController extends HttpServlet {
         String contact = request.getParameter("contact");
 
         Profile profile = profileRepo.getProfile();
-        profile.setName(name);
-        profile.setBio(bio);
-        profile.setExperience(experience);
-        profile.setContact(contact);
+        // Solo actualizar si el parámetro no es null ni vacío
+        if (name != null && !name.trim().isEmpty()) {
+            profile.setName(name.trim());
+        }
+        if (bio != null && !bio.trim().isEmpty()) {
+            profile.setBio(bio.trim());
+        }
+        if (experience != null && !experience.trim().isEmpty()) {
+            profile.setExperience(experience.trim());
+        }
+        if (contact != null && !contact.trim().isEmpty()) {
+            profile.setContact(contact.trim());
+        }
 
-        // Subir imagen de perfil
+        // Subir foto de perfil
         Part filePart = request.getPart("profilePicture");
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             String uploadDir = getServletContext().getRealPath("/uploads");
-            new File(uploadDir).mkdirs(); // Asegura que exista
-            String filePath = uploadDir + File.separator + fileName;
-            filePart.write(filePath);
+            new File(uploadDir).mkdirs();
+            filePart.write(uploadDir + File.separator + fileName);
             profile.setProfilePicture(fileName);
         }
 
@@ -59,12 +76,11 @@ public class ProfileController extends HttpServlet {
         if (bannerPart != null && bannerPart.getSize() > 0) {
             String fileName = Paths.get(bannerPart.getSubmittedFileName()).getFileName().toString();
             String uploadDir = getServletContext().getRealPath("/uploads");
-            String filePath = uploadDir + File.separator + fileName;
-            bannerPart.write(filePath);
+            bannerPart.write(uploadDir + File.separator + fileName);
             profile.setBanner(fileName);
         }
 
         profileRepo.saveProfile(profile);
-        response.sendRedirect("edit");
+        response.sendRedirect("skill");
     }
 }

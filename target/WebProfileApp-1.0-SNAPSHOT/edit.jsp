@@ -30,29 +30,29 @@
 <form method="post" action="${pageContext.request.contextPath}/profile" enctype="multipart/form-data">
     <div class="form-group">
         <label>Nombre:</label>
-        <input type="text" name="name" value="${profile.name}" required>
+        <input type="text" name="name" value="${profile.name}">
     </div>
 
     <div class="form-group">
         <label>Bio:</label>
-        <textarea name="bio" rows="3" required>${profile.bio}</textarea>
+        <textarea name="bio" rows="3">${profile.bio}</textarea>
     </div>
 
     <div class="form-group">
         <label>Experiencia:</label>
-        <textarea name="experience" rows="3" required>${profile.experience}</textarea>
+        <textarea name="experience" rows="3">${profile.experience}</textarea>
     </div>
 
     <div class="form-group">
         <label>Contacto:</label>
-        <input type="text" name="contact" value="${profile.contact}" required>
+        <input type="text" name="contact" value="${profile.contact}">
     </div>
 
     <div class="form-group">
         <label>Foto de perfil:</label>
         <input type="file" name="profilePicture" accept="image/*">
         <c:if test="${profile.profilePicture != 'default.jpg'}">
-            <br><img src="${pageContext.request.contextPath}/uploads/${profile.profilePicture}" class="preview" alt="Foto actual">
+            <br><img src="${pageContext.request.contextPath}/uploads/${empty profile.profilePicture ? 'default.png' : profile.profilePicture}" class="preview" alt="Foto actual">
         </c:if>
     </div>
 
@@ -80,13 +80,13 @@
 
         <div class="form-group">
             <label>Nombre de la habilidad:</label>
-            <input type="text" name="name" value="${skillToEdit != null ? skillToEdit.name : ''}" required>
+            <input type="text" name="name" value="${skillToEdit != null ? skillToEdit.name : ''}">
         </div>
 
         <div class="form-group">
             <label>Nivel (1–100):</label>
             <input type="number" name="level" min="1" max="100"
-                   value="${skillToEdit != null ? skillToEdit.level : '50'}" required>
+                    value="${skillToEdit != null ? skillToEdit.level : '50'}">
         </div>
 
         <button type="submit">

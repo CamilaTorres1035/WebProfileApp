@@ -1,7 +1,5 @@
-<%-- src/main/webapp/profile.jsp --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -9,11 +7,10 @@
     <meta charset="UTF-8">
     <title>Perfil - Programador Web</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; }
         .banner { 
             width: 100%; 
             height: 200px; 
-            background: #ddd url('${pageContext.request.contextPath}/uploads/${profile.banner}') center/cover no-repeat; 
+            background: #ddd center/cover no-repeat; 
         }
         .container { padding: 20px; max-width: 800px; margin: 0 auto; }
         .profile-pic { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
@@ -23,11 +20,17 @@
 </head>
 <body>
 
-<div class="banner"></div>
+<!-- Define variables JSTL para evitar expresiones complejas en atributos -->
+<c:set var="bannerUrl" value="${empty profile.banner ? 'banner.jpg' : profile.banner}" />
+<c:set var="profilePicUrl" value="${empty profile.profilePicture ? 'default.jpg' : profile.profilePicture}" />
+
+<div class="banner" 
+     style="background-image: url('${pageContext.request.contextPath}/uploads/${bannerUrl}')">
+</div>
 
 <div class="container">
-    <img src="${pageContext.request.contextPath}/uploads/${profile.profilePicture}" 
-            alt="Foto de perfil" class="profile-pic">
+    <img src="${pageContext.request.contextPath}/uploads/${profilePicUrl}" 
+         alt="Foto de perfil" class="profile-pic">
 
     <h1>${profile.name}</h1>
     <p><strong>Bio:</strong> ${profile.bio}</p>
