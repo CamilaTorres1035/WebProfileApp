@@ -1,0 +1,29 @@
+/* Estilos personalizados */
+
+.profile-img {
+  max-width: 180px;
+  max-height: 180px;
+  object-fit: contain;
+  object-position: center; /* Centra la imagen para evitar cortes extraños */
+  border: 5px solid white;
+  border-radius: 50%; /* Asegura que sea perfectamente circular */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10;
+  margin-top: -90px;
+  display: block; /* Asegura que se comporte como bloque */
+}
+
+/* Opcional: Para imágenes muy grandes, forzar un contenedor */
+.profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.skill-card {
+  transition: transform 0.2s;
+}
+
+.skill-card:hover {
+  transform: translateY(-5px);
+}

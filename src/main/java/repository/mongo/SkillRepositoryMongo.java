@@ -46,20 +46,24 @@ public class SkillRepositoryMongo implements ISkillRepository {
             throw new IllegalArgumentException("Habilidad duplicada: " + skill.getName());
         }
         Document doc = new Document()
-            .append("name", skill.getName())
-            .append("level", skill.getLevel());
+                .append("name", skill.getName())
+                .append("level", skill.getLevel());
         collection.insertOne(doc);
     }
 
     @Override
     public void deleteSkill(String id) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("ID de habilidad inválido");
+        }
         collection.deleteOne(Filters.eq("_id", new ObjectId(id)));
     }
 
     @Override
     public Skill getSkillById(String id) {
         Document doc = collection.find(Filters.eq("_id", new ObjectId(id))).first();
-        if (doc == null) return null;
+        if (doc == null)
+            return null;
         Skill skill = new Skill();
         skill.setId(doc.getObjectId("_id").toString());
         skill.setName(doc.getString("name"));
@@ -70,8 +74,8 @@ public class SkillRepositoryMongo implements ISkillRepository {
     @Override
     public void updateSkill(Skill skill) {
         Document doc = new Document()
-            .append("name", skill.getName())
-            .append("level", skill.getLevel());
+                .append("name", skill.getName())
+                .append("level", skill.getLevel());
         collection.replaceOne(Filters.eq("_id", new ObjectId(skill.getId())), doc);
     }
 }
