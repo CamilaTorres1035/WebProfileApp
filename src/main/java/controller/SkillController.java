@@ -15,7 +15,7 @@ import repository.mongo.ProfileRepositoryMongo;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/skill")
+@WebServlet("/edit")
 public class SkillController extends HttpServlet {
     private final ISkillRepository skillRepo = new SkillRepositoryMongo();
     private final IProfileRepository profileRepo = new ProfileRepositoryMongo();
@@ -144,7 +144,7 @@ public class SkillController extends HttpServlet {
             }
 
             // Éxito: redirigir para evitar reenvíos
-            resp.sendRedirect(req.getContextPath() + "/skill");
+            resp.sendRedirect(req.getContextPath() + "/edit");
 
         } catch (Exception e) {
             e.printStackTrace();

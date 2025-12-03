@@ -51,7 +51,7 @@
               <a class="nav-link" href="#habilidades">Habilidades</a>
             </li>
             <li class="nav-item">
-              <a class="btn btn-outline-warning btn-sm mt-1" href="${pageContext.request.contextPath}/edit.jsp">
+              <a class="btn btn-outline-warning btn-sm mt-1" href="${pageContext.request.contextPath}/edit">
                 ⚙️ Editar Perfil
               </a>
             </li>
@@ -64,7 +64,7 @@
     <header id="hero">
       <div class="container text-center text-white h-100 d-flex flex-column justify-content-center">
         <h1 class="display-3 fw-bold">${profile.name}</h1>
-        <p class="lead fs-3">Programador Web</p>
+        <p class="lead fs-3">Developer</p>
         <p class="mt-3 opacity-75">
           <i class="bi bi-envelope"></i> ${profile.contact}
         </p>
@@ -73,11 +73,13 @@
 
     <!-- Sobre mí -->
     <section id="sobre-mi" class="container text-center mb-5">
+      <div class="profile-container">
       <img
         src="${pageContext.request.contextPath}/uploads/${empty profile.profilePicture ? 'default.jpg' : profile.profilePicture}"
         alt="Foto de Perfil"
-        class="rounded-circle profile-img mb-4"
+        class="rounded-circle profile-img mb-3"
       />
+      </div>
 
       <div class="row justify-content-center">
         <div class="col-md-8">

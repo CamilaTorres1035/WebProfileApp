@@ -6,20 +6,22 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.Profile;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
+import javax.imageio.ImageIO;
+import org.bson.Document;
+import utils.MongoDBConnection;
 
 import model.Skill;
 import repository.mongo.SkillRepositoryMongo;
 import repository.IProfileRepository;
 import repository.mongo.ProfileRepositoryMongo;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import org.bson.Document;
-import utils.MongoDBConnection;
-
-@WebServlet(name = "ProfileController", urlPatterns = {"/", "/profile"})
+@WebServlet(name = "ProfileController", urlPatterns = { "/", "/profile" })
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
 public class ProfileController extends HttpServlet {
 
@@ -81,19 +83,71 @@ public class ProfileController extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             String uploadDir = getServletContext().getRealPath("/uploads");
-            new File(uploadDir).mkdirs();
-            filePart.write(uploadDir + File.separator + fileName);
+            File uploadFolder = new File(uploadDir);
+            if (!uploadFolder.exists()) {
+                uploadFolder.mkdirs();
+            }
+
+            String fullPath = uploadDir + File.separator + fileName;
+            filePart.write(fullPath);
+
+            // Redimensionar imagen a 180x180
+            try {
+                resizeImage(fullPath, 180, 180);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Si falla el redimensionado, usamos la original
+                System.out.println("No se pudo redimensionar la imagen. Se usa la original.");
+            }
+
             profile.setProfilePicture(fileName);
         }
 
         // banner
         String bannerColor = request.getParameter("bannerColor");
-        if (bannerColor != null && !bannerColor.trim().isEmpty()) {
+        if (bannerColor != null && bannerColor.matches("^#[0-9A-Fa-f]{6}$")) {
             profile.setBannerColor(bannerColor.trim());
+        } else {
+            if (profile.getBannerColor() == null || profile.getBannerColor().isEmpty()) {
+                profile.setBannerColor("#4A90E2");
+            }
         }
 
         profileRepo.saveProfile(profile);
         System.out.println("Perfil guardado: " + profile.getName() + " | Banner: " + profile.getBannerColor());
-        response.sendRedirect(request.getContextPath() + "/skill");
+        response.sendRedirect(request.getContextPath() + "/skill"); // Redirige a la página de edición
+    }
+
+    // --- Método auxiliar para redimensionar imagen ---
+    private void resizeImage(String filePath, int targetWidth, int targetHeight) throws IOException {
+        File file = new File(filePath);
+        String fileName = file.getName().toLowerCase();
+
+        String format;
+        if (fileName.endsWith(".png")) {
+            format = "png";
+        } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
+            format = "jpg";
+        } else if (fileName.endsWith(".gif")) {
+            format = "gif";
+        } else {
+            // Si no es un formato soportado, no redimensionamos
+            System.out.println("Formato no soportado: " + fileName + ". No se redimensionará.");
+            return;
+        }
+
+        BufferedImage originalImage = ImageIO.read(file);
+        if (originalImage == null) {
+            throw new IOException("No se pudo decodificar la imagen: " + filePath);
+        }
+
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resizedImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+        g2d.dispose();
+
+        // Sobrescribir con el mismo formato
+        ImageIO.write(resizedImage, format, file);
     }
 }

@@ -53,7 +53,7 @@
     <header id="hero">
       <div class="container text-center text-white h-100 d-flex flex-column justify-content-center">
         <h1 class="display-4 fw-bold">${profile.name}</h1>
-        <p class="lead fs-4">Programador Web</p>
+        <p class="lead fs-4">Developer</p>
       </div>
     </header>
 
@@ -121,7 +121,7 @@
             </div>
             <div class="card-body">
                 <!-- Formulario agregar/editar -->
-                <form method="post" action="${pageContext.request.contextPath}/skill" class="row mb-4 g-3">
+                <form method="post" action="${pageContext.request.contextPath}/edit" class="row mb-4 g-3">
                     <input type="hidden" name="action" value="${skillToEdit != null ? 'update' : 'add'}">
                     <c:if test="${skillToEdit != null}">
                         <input type="hidden" name="id" value="${skillToEdit.id}">
@@ -152,11 +152,14 @@
                                     <h5 class="card-title fw-bold">${skill.name}</h5>
                                     <p class="text-muted mb-2">${skill.level}/100</p>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="${pageContext.request.contextPath}/skill?action=edit&id=${skill.id}" 
+                                        <a href="${pageContext.request.contextPath}/edit?action=edit&id=${skill.id}" 
                                            class="btn btn-sm btn-outline-primary">Editar</a>
-                                        <a href="${pageContext.request.contextPath}/skill?action=delete&id=${skill.id}" 
-                                           class="btn btn-sm btn-outline-danger"
-                                           onclick="return confirm('¿Eliminar esta habilidad?')">Borrar</a>
+                                        <form action="${pageContext.request.contextPath}/edit" method="post" style="display:inline;" 
+      onsubmit="return confirm('¿Eliminar esta habilidad?')">
+  <input type="hidden" name="action" value="delete">
+  <input type="hidden" name="id" value="${skill.id}">
+  <button type="submit" class="btn btn-sm btn-outline-danger">Borrar</button>
+</form>
                                     </div>
                                 </div>
                             </div>
