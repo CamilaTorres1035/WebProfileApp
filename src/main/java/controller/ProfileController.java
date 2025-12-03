@@ -21,7 +21,7 @@ import repository.mongo.SkillRepositoryMongo;
 import repository.IProfileRepository;
 import repository.mongo.ProfileRepositoryMongo;
 
-@WebServlet(name = "ProfileController", urlPatterns = { "/", "/profile" })
+@WebServlet(name = "ProfileController", urlPatterns = {"/", "/profile"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
 public class ProfileController extends HttpServlet {
 
@@ -94,8 +94,7 @@ public class ProfileController extends HttpServlet {
             // Redimensionar imagen a 180x180
             try {
                 resizeImage(fullPath, 180, 180);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException e) {
                 // Si falla el redimensionado, usamos la original
                 System.out.println("No se pudo redimensionar la imagen. Se usa la original.");
             }
@@ -122,7 +121,6 @@ public class ProfileController extends HttpServlet {
     private void resizeImage(String filePath, int targetWidth, int targetHeight) throws IOException {
         File file = new File(filePath);
         String fileName = file.getName().toLowerCase();
-
         String format;
         if (fileName.endsWith(".png")) {
             format = "png";
@@ -131,7 +129,6 @@ public class ProfileController extends HttpServlet {
         } else if (fileName.endsWith(".gif")) {
             format = "gif";
         } else {
-            // Si no es un formato soportado, no redimensionamos
             System.out.println("Formato no soportado: " + fileName + ". No se redimensionará.");
             return;
         }
@@ -141,13 +138,15 @@ public class ProfileController extends HttpServlet {
             throw new IOException("No se pudo decodificar la imagen: " + filePath);
         }
 
-        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+        // ✅ Corrección clave: usa el tipo correcto según el formato
+        int imageType = "png".equals(format) ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, imageType);
+
         Graphics2D g2d = resizedImage.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
         g2d.dispose();
 
-        // Sobrescribir con el mismo formato
         ImageIO.write(resizedImage, format, file);
     }
 }

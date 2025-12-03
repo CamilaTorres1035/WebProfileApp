@@ -97,6 +97,7 @@ public class ProfileRepositoryMongo implements IProfileRepository {
         collection.deleteMany(new Document()); // Borra todos los documentos (solo hay uno)
     }
 
+    @Override
     public void resetProfile() {
         // Borra el perfil actual
         collection.deleteMany(new Document());
@@ -108,7 +109,7 @@ public class ProfileRepositoryMongo implements IProfileRepository {
                 "Experiencia por defecto",
                 "contacto@ejemplo.com",
                 "default.png",
-                "banner.jpeg");
+                "#4A90E2");
         saveProfile(defaultProfile);
     }
 }
