@@ -21,8 +21,8 @@
 <body>
 
 <!-- Define variables JSTL para evitar expresiones complejas en atributos -->
-<c:set var="bannerUrl" value="${empty profile.banner ? 'banner.jpg' : profile.banner}" />
-<c:set var="profilePicUrl" value="${empty profile.profilePicture ? 'default.jpg' : profile.profilePicture}" />
+<c:set var="bannerUrl" value="${empty profile.banner ? 'banner.jpeg' : profile.banner}" />
+<c:set var="profilePicUrl" value="${empty profile.profilePicture ? 'default.png' : profile.profilePicture}" />
 
 <div class="banner" 
      style="background-image: url('${pageContext.request.contextPath}/uploads/${bannerUrl}')">

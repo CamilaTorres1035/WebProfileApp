@@ -51,7 +51,7 @@
     <div class="form-group">
         <label>Foto de perfil:</label>
         <input type="file" name="profilePicture" accept="image/*">
-        <c:if test="${profile.profilePicture != 'default.jpg'}">
+        <c:if test="${profile.profilePicture != 'default.png'}">
             <br><img src="${pageContext.request.contextPath}/uploads/${empty profile.profilePicture ? 'default.png' : profile.profilePicture}" class="preview" alt="Foto actual">
         </c:if>
     </div>
@@ -59,7 +59,7 @@
     <div class="form-group">
         <label>Banner:</label>
         <input type="file" name="banner" accept="image/*">
-        <c:if test="${profile.banner != 'banner.jpg'}">
+        <c:if test="${profile.banner != 'banner.jpeg'}">
             <br><img src="${pageContext.request.contextPath}/uploads/${profile.banner}" class="preview" alt="Banner actual">
         </c:if>
     </div>

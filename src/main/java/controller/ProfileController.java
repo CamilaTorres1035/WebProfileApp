@@ -1,12 +1,12 @@
 package controller;
 
+import com.mongodb.client.MongoCollection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.Profile;
 import java.util.List;
-
 
 import model.Skill;
 import repository.mongo.SkillRepositoryMongo;
@@ -16,6 +16,9 @@ import repository.mongo.ProfileRepositoryMongo;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import org.bson.Document;
+import repository.ISkillRepository;
+import utils.MongoDBConnection;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/", "/profile"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
@@ -26,10 +29,23 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // !Solo para pruebas: si ?reset=true, borra el perfil
-        if ("true".equals(request.getParameter("reset"))) {
-            profileRepo.deleteProfile(); // Usa tu repositorio
+
+        // Reinicio total: si se pasa ?resetdb=true, borra perfil y habilidades
+        if ("true".equals(request.getParameter("resetdb"))) {
+            profileRepo = new ProfileRepositoryMongo();
+
+            // Borra el perfil
+            MongoCollection<Document> profileCol = MongoDBConnection.getDatabase().getCollection("profile");
+            profileCol.deleteMany(new Document());
+
+            // Borra todas las habilidades
+            MongoCollection<Document> skillsCol = MongoDBConnection.getDatabase().getCollection("skills");
+            skillsCol.deleteMany(new Document());
+
+            response.sendRedirect(request.getContextPath() + "/");
+            return;
         }
+
         Profile profile = profileRepo.getProfile();
         List<Skill> skills = new SkillRepositoryMongo().getAllSkills();
 

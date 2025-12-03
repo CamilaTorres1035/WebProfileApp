@@ -21,12 +21,12 @@ public class ProfileRepositoryMongo implements IProfileRepository {
         if (doc == null) {
             // Crear perfil por defecto si no existe
             Profile defaultProfile = new Profile(
-                "Programador Web",
-                "Biografía por defecto",
-                "Experiencia por defecto",
-                "contacto@ejemplo.com",
-                "default.jpg",
-                "banner.jpg"
+                    "Programador Web",
+                    "Biografía por defecto",
+                    "Experiencia por defecto",
+                    "contacto@ejemplo.com",
+                    "default.png",
+                    "banner.jpeg"
             );
             saveProfile(defaultProfile);
             return defaultProfile;
@@ -42,25 +42,32 @@ public class ProfileRepositoryMongo implements IProfileRepository {
     }
 
     // --- Métodos auxiliares ---
-
     private Profile documentToProfile(Document doc) {
         Profile p = new Profile();
 
         // Nombre
         p.setName(doc.getString("name"));
-        if (p.getName() == null) p.setName("Programador Web");
+        if (p.getName() == null) {
+            p.setName("Programador Web");
+        }
 
         // Bio
         p.setBio(doc.getString("bio"));
-        if (p.getBio() == null) p.setBio("Biografía por defecto");
+        if (p.getBio() == null) {
+            p.setBio("Biografía por defecto");
+        }
 
         // Experiencia
         p.setExperience(doc.getString("experience"));
-        if (p.getExperience() == null) p.setExperience("Experiencia por defecto");
+        if (p.getExperience() == null) {
+            p.setExperience("Experiencia por defecto");
+        }
 
         // Contacto
         p.setContact(doc.getString("contact"));
-        if (p.getContact() == null) p.setContact("contacto@ejemplo.com");
+        if (p.getContact() == null) {
+            p.setContact("contacto@ejemplo.com");
+        }
 
         // Foto de perfil
         Object picObj = doc.get("profilePicture");
@@ -75,16 +82,32 @@ public class ProfileRepositoryMongo implements IProfileRepository {
 
     private Document profileToDocument(Profile p) {
         return new Document()
-            .append("name", p.getName())
-            .append("bio", p.getBio())
-            .append("experience", p.getExperience())
-            .append("contact", p.getContact())
-            .append("profilePicture", p.getProfilePicture())
-            .append("banner", p.getBanner());
+                .append("name", p.getName())
+                .append("bio", p.getBio())
+                .append("experience", p.getExperience())
+                .append("contact", p.getContact())
+                .append("profilePicture", p.getProfilePicture())
+                .append("banner", p.getBanner());
     }
 
     @Override
     public void deleteProfile() {
         collection.deleteMany(new Document()); // Borra todos los documentos (solo hay uno)
+    }
+
+    public void resetProfile() {
+        // Borra el perfil actual
+        collection.deleteMany(new Document());
+
+        // Crea uno nuevo con imágenes por defecto
+        Profile defaultProfile = new Profile(
+                "Programador Web",
+                "Biografía por defecto",
+                "Experiencia por defecto",
+                "contacto@ejemplo.com",
+                "default.png",
+                "banner.jpeg"
+        );
+        saveProfile(defaultProfile);
     }
 }

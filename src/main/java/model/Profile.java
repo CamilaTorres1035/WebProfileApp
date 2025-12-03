@@ -6,7 +6,7 @@ public class Profile {
     private String experience;
     private String contact;
     private String profilePicture;  // nombre del archivo (ej. "foto.jpg")
-    private String banner;          // nombre del archivo del banner (ej. "banner.jpg")
+    private String banner;          // nombre del archivo del banner (ej. "banner.jpeg")
 
     // Constructor vacío (requerido para Gson si decides usar JSON después)
     public Profile() {}
