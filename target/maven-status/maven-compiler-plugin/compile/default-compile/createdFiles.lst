@@ -1,0 +1,9 @@
+controller\ProfileController.class
+repository\ISkillRepository.class
+repository\IProfileRepository.class
+repository\mongo\SkillRepositoryMongo.class
+controller\SkillController.class
+utils\MongoDBConnection.class
+model\Profile.class
+model\Skill.class
+repository\mongo\ProfileRepositoryMongo.class

@@ -31,6 +31,14 @@
             <version>${jakartaee}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- JSTL API (jakarta) -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- Implementación de JSTL (taglibs estándar para Jakarta) -->
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
