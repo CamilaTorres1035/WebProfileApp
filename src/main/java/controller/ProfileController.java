@@ -86,16 +86,14 @@ public class ProfileController extends HttpServlet {
             profile.setProfilePicture(fileName);
         }
 
-        // Subir banner
-        Part bannerPart = request.getPart("banner");
-        if (bannerPart != null && bannerPart.getSize() > 0) {
-            String fileName = Paths.get(bannerPart.getSubmittedFileName()).getFileName().toString();
-            String uploadDir = getServletContext().getRealPath("/uploads");
-            bannerPart.write(uploadDir + File.separator + fileName);
-            profile.setBanner(fileName);
+        // banner
+        String bannerColor = request.getParameter("bannerColor");
+        if (bannerColor != null && !bannerColor.trim().isEmpty()) {
+            profile.setBannerColor(bannerColor.trim());
         }
 
         profileRepo.saveProfile(profile);
-        response.sendRedirect("skill");
+        System.out.println("Perfil guardado: " + profile.getName() + " | Banner: " + profile.getBannerColor());
+        response.sendRedirect(request.getContextPath() + "/skill");
     }
 }

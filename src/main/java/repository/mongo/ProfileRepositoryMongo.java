@@ -26,8 +26,7 @@ public class ProfileRepositoryMongo implements IProfileRepository {
                     "Experiencia por defecto",
                     "contacto@ejemplo.com",
                     "default.png",
-                    "banner.jpeg"
-            );
+                    "banner.jpeg");
             saveProfile(defaultProfile);
             return defaultProfile;
         }
@@ -74,8 +73,11 @@ public class ProfileRepositoryMongo implements IProfileRepository {
         p.setProfilePicture(picObj != null ? picObj.toString() : "default.png");
 
         // Banner
-        Object bannerObj = doc.get("banner");
-        p.setBanner(bannerObj != null ? bannerObj.toString() : "banner.jpeg");
+        String bannerColor = doc.getString("bannerColor");
+        if (bannerColor == null) {
+            bannerColor = "#4A90E2";
+        }
+        p.setBannerColor(bannerColor);
 
         return p;
     }
@@ -87,7 +89,7 @@ public class ProfileRepositoryMongo implements IProfileRepository {
                 .append("experience", p.getExperience())
                 .append("contact", p.getContact())
                 .append("profilePicture", p.getProfilePicture())
-                .append("banner", p.getBanner());
+                .append("bannerColor", p.getBannerColor());
     }
 
     @Override
@@ -106,8 +108,7 @@ public class ProfileRepositoryMongo implements IProfileRepository {
                 "Experiencia por defecto",
                 "contacto@ejemplo.com",
                 "default.png",
-                "banner.jpeg"
-        );
+                "banner.jpeg");
         saveProfile(defaultProfile);
     }
 }

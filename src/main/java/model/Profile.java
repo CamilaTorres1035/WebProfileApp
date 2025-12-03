@@ -6,19 +6,21 @@ public class Profile {
     private String experience;
     private String contact;
     private String profilePicture;  // nombre del archivo (ej. "foto.jpg")
-    private String banner;          // nombre del archivo del banner (ej. "banner.jpeg")
+    private String bannerColor;
 
     // Constructor vacío (requerido para Gson si decides usar JSON después)
-    public Profile() {}
+    public Profile() {
+        this.bannerColor = "#4A90E2"; // Azul por defecto
+    }
 
     // Constructor completo
-    public Profile(String name, String bio, String experience, String contact, String profilePicture, String banner) {
+    public Profile(String name, String bio, String experience, String contact, String profilePicture, String bannerColor) {
         this.name = name;
         this.bio = bio;
         this.experience = experience;
         this.contact = contact;
         this.profilePicture = profilePicture;
-        this.banner = banner;
+        this.bannerColor = bannerColor;
     }
 
     // Getters
@@ -42,8 +44,8 @@ public class Profile {
         return profilePicture;
     }
 
-    public String getBanner() {
-        return banner;
+    public String getBannerColor() {
+        return bannerColor;
     }
 
     // Setters
@@ -67,7 +69,7 @@ public class Profile {
         this.profilePicture = profilePicture;
     }
 
-    public void setBanner(String banner) {
-        this.banner = banner;
+    public void setBannerColor(String bannerColor) {
+        this.bannerColor = bannerColor;
     }
 }

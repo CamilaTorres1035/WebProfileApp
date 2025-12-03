@@ -132,13 +132,19 @@ public class SkillController extends HttpServlet {
 
             } else if ("delete".equals(action)) {
                 String id = req.getParameter("id");
-                if (id != null) {
-                    skillRepo.deleteSkill(id);
+                try {
+                    if (id != null) {
+                        skillRepo.deleteSkill(id);
+                    }
+                } catch (Exception e) {
+                    req.setAttribute("errorMessage", "Error al eliminar: " + e.getMessage());
+                    forwardWithProfileAndSkills(req, resp);
+                    return;
                 }
             }
 
             // Éxito: redirigir para evitar reenvíos
-            resp.sendRedirect("skill");
+            resp.sendRedirect(req.getContextPath() + "/skill");
 
         } catch (Exception e) {
             e.printStackTrace();

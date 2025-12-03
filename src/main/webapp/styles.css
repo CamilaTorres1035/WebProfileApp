@@ -1,0 +1,20 @@
+/* Estilos personalizados */
+
+.profile-img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10;
+  margin-top: -90px;
+}
+
+.skill-card {
+  transition: transform 0.2s;
+}
+
+.skill-card:hover {
+  transform: translateY(-5px);
+}
